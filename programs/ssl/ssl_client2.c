@@ -25,6 +25,11 @@
 #include "test/psa_crypto_helpers.h"
 #endif /* MBEDTLS_USE_PSA_CRYPTO || MBEDTLS_SSL_PROTO_TLS1_3 */
 
+#if defined(MBEDTLS_PARSEC_ATTESTATION)
+#include "parsec/parsec_se_driver.h"
+#include "parsec/parsec_client.h"
+#endif /* MBEDTLS_PARSEC_ATTESTATION */
+
 #if defined(MBEDTLS_SSL_TEST_IMPOSSIBLE)
 int main( void )
 {
@@ -675,6 +680,15 @@ int main( int argc, char *argv[] )
     io_ctx_t io_ctx;
 
 #if defined(MBEDTLS_SSL_TLS_ATTESTATION) && defined(MBEDTLS_PSA_CRYPTO_C)
+
+#if defined(MBEDTLS_PARSEC_ATTESTATION)
+    psa_status_t reg_status = psa_register_se_driver((psa_key_location_t)0x000001,
+			&PARSEC_SE_DRIVER);
+	if (reg_status != PSA_SUCCESS) {
+		printf("Register failed (status = %d)\n", reg_status);
+		return 1;
+	}
+#endif /* MBEDTLS_PARSEC_ATTESTATION */
     psa_key_attributes_t attributes = PSA_KEY_ATTRIBUTES_INIT;
 
 //    psa_status_t status;
