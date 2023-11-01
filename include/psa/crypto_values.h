@@ -513,7 +513,7 @@
     (PSA_KEY_TYPE_PUBLIC_KEY_OF_KEY_PAIR(type) == PSA_KEY_TYPE_RSA_PUBLIC_KEY)
 
 #define PSA_KEY_TYPE_ECC_PUBLIC_KEY_BASE            ((psa_key_type_t)0x4100)
-#define PSA_KEY_TYPE_ECC_KEY_PAIR_BASE              ((psa_key_type_t)0x7100)
+#define PSA_KEY_TYPE_ECC_KEY_PAIR_BASE              0x7100
 #define PSA_KEY_TYPE_ECC_CURVE_MASK                 ((psa_key_type_t)0x00ff)
 /** Elliptic curve key pair.
  *
@@ -578,7 +578,7 @@
  * _SEC 2: Recommended Elliptic Curve Domain Parameters_.
  * https://www.secg.org/sec2-v2.pdf
  */
-#define PSA_ECC_FAMILY_SECP_R1           ((psa_ecc_family_t) 0x12)
+#define PSA_ECC_FAMILY_SECP_R1           0x12
 /* SECP160R2 (SEC2 v1, obsolete) */
 #define PSA_ECC_FAMILY_SECP_R2           ((psa_ecc_family_t) 0x1b)
 
@@ -857,7 +857,7 @@
 /** An invalid algorithm identifier value. */
 #define PSA_ALG_NONE                            ((psa_algorithm_t)0)
 
-#define PSA_ALG_HASH_MASK                       ((psa_algorithm_t)0x000000ff)
+#define PSA_ALG_HASH_MASK                       0x000000ff
 /** MD5 */
 #define PSA_ALG_MD5                             ((psa_algorithm_t)0x02000003)
 /** PSA_ALG_RIPEMD160 */
@@ -867,7 +867,7 @@
 /** SHA2-224 */
 #define PSA_ALG_SHA_224                         ((psa_algorithm_t)0x02000008)
 /** SHA2-256 */
-#define PSA_ALG_SHA_256                         ((psa_algorithm_t)0x02000009)
+#define PSA_ALG_SHA_256                         0x02000009
 /** SHA2-384 */
 #define PSA_ALG_SHA_384                         ((psa_algorithm_t)0x0200000a)
 /** SHA2-512 */
@@ -1453,7 +1453,7 @@
     (PSA_ALG_IS_RSA_PSS_STANDARD_SALT(alg) ||                   \
      PSA_ALG_IS_RSA_PSS_ANY_SALT(alg))
 
-#define PSA_ALG_ECDSA_BASE                      ((psa_algorithm_t)0x06000600)
+#define PSA_ALG_ECDSA_BASE                      0x06000600
 /** ECDSA signature with hashing.
  *
  * This is the ECDSA signature scheme defined by ANSI X9.62,
@@ -2512,7 +2512,7 @@ static inline int mbedtls_svc_key_id_is_null( mbedtls_svc_key_id_t key )
  *
  * For a key pair, this concerns the private key.
  */
-#define PSA_KEY_USAGE_SIGN_HASH                 ((psa_key_usage_t)0x00001000)
+#define PSA_KEY_USAGE_SIGN_HASH                 0x00001000
 
 /** Whether the key may be used to verify a message signature.
  *
@@ -2522,7 +2522,7 @@ static inline int mbedtls_svc_key_id_is_null( mbedtls_svc_key_id_t key )
  *
  * For a key pair, this concerns the public key.
  */
-#define PSA_KEY_USAGE_VERIFY_HASH               ((psa_key_usage_t)0x00002000)
+#define PSA_KEY_USAGE_VERIFY_HASH               0x00002000
 
 /** Whether the key may be used to derive other keys or produce a password
  * hash.
