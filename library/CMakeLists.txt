@@ -29,6 +29,7 @@ set(src_crypto
     ctr_drbg.c
     des.c
     dhm.c
+    eat.c
     ecdh.c
     ecdsa.c
     ecjpake.c
