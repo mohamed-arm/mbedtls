@@ -2058,12 +2058,14 @@ int mbedtls_ssl_flush_output( mbedtls_ssl_context *ssl )
     mbedtls_ssl_update_out_pointers( ssl, ssl->transform_out );
 
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "<= flush output" ) );
+   
+
 gettimeofday(&tval_after, NULL);
 
-timersub(&tval_after, &tval_before, &tval_result);
-
-printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
-
+  printf("Time in microseconds: %ld microseconds\n",
+            ((tval_after.tv_sec - tval_before.tv_sec)*1000000L
+           +tval_after.tv_usec) - tval_before.tv_usec
+          ); // Added semicolon
     return( 0 );
 
 }
