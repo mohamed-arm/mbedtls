@@ -1778,6 +1778,11 @@ int mbedtls_ssl_decrypt_buf( mbedtls_ssl_context const *ssl,
  */
 int mbedtls_ssl_fetch_input( mbedtls_ssl_context *ssl, size_t nb_want )
 {
+
+   struct timeval tval_before, tval_after, tval_result;
+   gettimeofday(&tval_before, NULL);
+   printf("[RECV ]Time elapsed: %ld.%06ld\n", (long int)tval_before.tv_sec, (long int)tval_before.tv_usec);
+ 
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     size_t len;
 #if defined(MBEDTLS_SSL_VARIABLE_BUFFER_LENGTH)
@@ -2062,12 +2067,12 @@ int mbedtls_ssl_flush_output( mbedtls_ssl_context *ssl )
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "<= flush output" ) );
    
 
-gettimeofday(&tval_after, NULL);
+//gettimeofday(&tval_after, NULL);
 
-  printf("time in microseconds: %ld microseconds\n",
-            ((tval_after.tv_sec - tval_before.tv_sec)*1000000l
-           +tval_after.tv_usec) - tval_before.tv_usec
-          ); // Added semicolon
+ // printf("time in microseconds: %ld microseconds\n",
+ //           ((tval_after.tv_sec - tval_before.tv_sec)*1000000l
+ //          +tval_after.tv_usec) - tval_before.tv_usec
+ //`         ); // Added semicolon
     return( 0 );
 
 }
