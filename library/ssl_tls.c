@@ -1279,7 +1279,6 @@ void mbedtls_ssl_set_bio( mbedtls_ssl_context *ssl,
         mbedtls_ssl_recv_t *f_recv,
         mbedtls_ssl_recv_timeout_t *f_recv_timeout )
 {
-aa
     ssl->p_bio          = p_bio;
     ssl->f_send         = f_send;
     ssl->f_recv         = f_recv;
