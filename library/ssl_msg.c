@@ -1997,7 +1997,9 @@ int mbedtls_ssl_fetch_input( mbedtls_ssl_context *ssl, size_t nb_want )
  * Flush any data not yet written
  */
 int mbedtls_ssl_flush_output( mbedtls_ssl_context *ssl )
-{
+{ 
+	struct timeval tval_before, tval_after, tval_result;
+    gettimeofday(&tval_before, NULL);
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     unsigned char *buf;
 
@@ -2055,8 +2057,14 @@ int mbedtls_ssl_flush_output( mbedtls_ssl_context *ssl )
     mbedtls_ssl_update_out_pointers( ssl, ssl->transform_out );
 
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "<= flush output" ) );
+gettimeofday(&tval_after, NULL);
+
+timersub(&tval_after, &tval_before, &tval_result);
+
+printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
 
     return( 0 );
+
 }
 
 /*
