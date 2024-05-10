@@ -3036,13 +3036,11 @@ int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
     {
 #if defined(MBEDTLS_SSL_PROTO_TLS1_3)
         if( mbedtls_ssl_conf_is_tls13_only( ssl->conf ) )
-		printf("13\n");
             ret = mbedtls_ssl_tls13_handshake_server_step( ssl );
 #endif /* MBEDTLS_SSL_PROTO_TLS1_3 */
 
 #if defined(MBEDTLS_SSL_PROTO_TLS1_2)
         if( mbedtls_ssl_conf_is_tls12_only( ssl->conf ) )
-		printf("12\n");
             ret = mbedtls_ssl_handshake_server_step( ssl );
 #endif /* MBEDTLS_SSL_PROTO_TLS1_2 */
     }
