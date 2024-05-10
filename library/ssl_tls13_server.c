@@ -45,6 +45,10 @@
 #include "ssl_tls13_keys.h"
 #include "ssl_debug_helpers.h"
 
+#define TIME_START gettimeofday(&tv1, NULL);
+#define TIME_STOP(str) gettimeofday(&tv2, NULL); \
+         printf ("%s  = %f seconds\n",str, (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
+
 /* From RFC 8446:
  *   struct {
  *          ProtocolVersion versions<2..254>;
@@ -1787,23 +1791,29 @@ int mbedtls_ssl_tls13_handshake_server_step( mbedtls_ssl_context *ssl )
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "tls13 server state: %s(%d)",
                                 mbedtls_ssl_states_str( ssl->state ),
                                 ssl->state ) );
-
+    struct timeval  tv1, tv2;
     switch( ssl->state )
     {
         /* start state */
         case MBEDTLS_SSL_HELLO_REQUEST:
+	TIME_START;
             mbedtls_ssl_handshake_set_state( ssl, MBEDTLS_SSL_CLIENT_HELLO );
+	TIME_STOP("tls13 #1");
             ret = 0;
             break;
 
         case MBEDTLS_SSL_CLIENT_HELLO:
+	TIME_START;
             ret = ssl_tls13_process_client_hello( ssl );
+	TIME_STOP("tls13 #2");
             if( ret != 0 )
                 MBEDTLS_SSL_DEBUG_RET( 1, "ssl_tls13_process_client_hello", ret );
             break;
 
         case MBEDTLS_SSL_HELLO_RETRY_REQUEST:
+	TIME_START;
             ret = ssl_tls13_write_hello_retry_request( ssl );
+	TIME_STOP("tls13 #3");
             if( ret != 0 )
             {
                 MBEDTLS_SSL_DEBUG_RET( 1, "ssl_tls13_write_hello_retry_request", ret );
@@ -1812,11 +1822,15 @@ int mbedtls_ssl_tls13_handshake_server_step( mbedtls_ssl_context *ssl )
             break;
 
         case MBEDTLS_SSL_SERVER_HELLO:
+	TIME_START;
             ret = ssl_tls13_write_server_hello( ssl );
+	TIME_STOP("tls13 #4");
             break;
 
         case MBEDTLS_SSL_ENCRYPTED_EXTENSIONS:
+	TIME_START;
             ret = ssl_tls13_write_encrypted_extensions( ssl );
+	TIME_STOP("tls13 #5");
             if( ret != 0 )
             {
                 MBEDTLS_SSL_DEBUG_RET( 1, "ssl_tls13_write_encrypted_extensions", ret );
@@ -1826,32 +1840,46 @@ int mbedtls_ssl_tls13_handshake_server_step( mbedtls_ssl_context *ssl )
 
 #if defined(MBEDTLS_KEY_EXCHANGE_WITH_CERT_ENABLED)
         case MBEDTLS_SSL_CERTIFICATE_REQUEST:
+	TIME_START;
             ret = ssl_tls13_write_certificate_request( ssl );
+	TIME_STOP("tls13 #6");
             break;
 
         case MBEDTLS_SSL_SERVER_CERTIFICATE:
+	TIME_START;
             ret = ssl_tls13_write_server_certificate( ssl );
+	TIME_STOP("tls13 #7");
             break;
 
         case MBEDTLS_SSL_CERTIFICATE_VERIFY:
+	TIME_START;
             ret = ssl_tls13_write_certificate_verify( ssl );
+	TIME_STOP("tls13 #8");
             break;
 #endif /* MBEDTLS_KEY_EXCHANGE_WITH_CERT_ENABLED */
 
         case MBEDTLS_SSL_SERVER_FINISHED:
+	TIME_START;
             ret = ssl_tls13_write_server_finished( ssl );
+	TIME_STOP("tls13 #9");
             break;
 
         case MBEDTLS_SSL_CLIENT_FINISHED:
+	TIME_START;
             ret = ssl_tls13_process_client_finished( ssl );
+	TIME_STOP("tls13 #10");
             break;
 
         case MBEDTLS_SSL_HANDSHAKE_WRAPUP:
+	TIME_START;
             ret = ssl_tls13_handshake_wrapup( ssl );
+	TIME_STOP("tls13 #11");
             break;
 
         case MBEDTLS_SSL_CLIENT_CERTIFICATE:
+	TIME_START;
             ret = mbedtls_ssl_tls13_process_certificate( ssl );
+	TIME_STOP("tls13 #12");
             if( ret == 0 )
             {
 #if defined(MBEDTLS_SSL_TLS_ATTESTATION)
@@ -1875,7 +1903,9 @@ int mbedtls_ssl_tls13_handshake_server_step( mbedtls_ssl_context *ssl )
             break;
 
         case MBEDTLS_SSL_CLIENT_CERTIFICATE_VERIFY:
+	TIME_START;
             ret = mbedtls_ssl_tls13_process_certificate_verify( ssl );
+	TIME_STOP("tls13 #13");
             if( ret == 0 )
             {
                 mbedtls_ssl_handshake_set_state(
