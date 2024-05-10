@@ -50,7 +50,6 @@
 #include <string.h>
 
 #include <sys/time.h>
-struct timeval  tv1, tv2;
 
 #define TIME_START gettimeofday(&tv1, NULL);
 #define TIME_STOP(str) gettimeofday(&tv1, NULL); \
@@ -2975,6 +2974,8 @@ static int ssl_prepare_handshake_step( mbedtls_ssl_context *ssl )
 
 int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
 {
+    struct timeval  tv1, tv2;
+    gettimeofday(&tv1, NULL);
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
 
     //printf("----> mbedtls_ssl_handshake_step \n");
@@ -2990,10 +2991,13 @@ int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
     ret = ssl_prepare_handshake_step( ssl );
     if( ret != 0 )
         return( ret );
-//gettimeofday(&tv2, NULL); printf ("Total time = %f seconds\n", (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
+    TIME_STOP("ssl_prepare_handshake_step");
+    TIME_START;
     ret = mbedtls_ssl_handle_pending_alert( ssl );
     if( ret != 0 )
         goto cleanup;
+    TIME_STOP("mbedtls_ssl_handle_pending_alert");
+    TIME_START;
 
 #if defined(MBEDTLS_SSL_CLI_C)
     if( ssl->conf->endpoint == MBEDTLS_SSL_IS_CLIENT )
@@ -3026,6 +3030,8 @@ int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
     }
 #endif
 #if defined(MBEDTLS_SSL_SRV_C)
+    TIME_STOP("mbedtls_ssl_handshake_client_step");
+    TIME_START;
     if( ssl->conf->endpoint == MBEDTLS_SSL_IS_SERVER )
     {
 #if defined(MBEDTLS_SSL_PROTO_TLS1_3)
@@ -3039,6 +3045,8 @@ int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
 #endif /* MBEDTLS_SSL_PROTO_TLS1_2 */
     }
 #endif
+    TIME_STOP("mbedtls_ssl_handshake_server_step");
+    TIME_START;
 
     if( ret != 0 )
     {
@@ -3061,6 +3069,7 @@ cleanup:
  */
 int mbedtls_ssl_handshake( mbedtls_ssl_context *ssl )
 {
+    struct timeval  tv1, tv2;
     gettimeofday(&tv1, NULL);
     int ret = 0;
 
