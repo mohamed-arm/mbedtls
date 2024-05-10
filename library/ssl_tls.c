@@ -2970,6 +2970,7 @@ int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
 {
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
 
+    printf("----> mbedtls_ssl_handshake_step \n");
     if( ssl            == NULL                       ||
         ssl->conf      == NULL                       ||
         ssl->handshake == NULL                       ||
