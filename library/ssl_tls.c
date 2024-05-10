@@ -3091,8 +3091,8 @@ gettimeofday(&tv1, NULL);
             break;
     }
 
-gettimeofday(&tv2, NULL); printf ("mbedtls_ssl_handshake_step  = %f seconds\n", (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "<= handshake" ) );
+gettimeofday(&tv2, NULL); printf ("mbedtls_ssl_handshake_step  = %f seconds\n", (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
 
     return( ret );
 }
