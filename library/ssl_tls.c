@@ -2965,6 +2965,8 @@ static int ssl_prepare_handshake_step( mbedtls_ssl_context *ssl )
 
     return( ret );
 }
+#include <sys/time.h>
+struct timeval  tv1, tv2;
 
 int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
 {
@@ -2979,10 +2981,14 @@ int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
         return( MBEDTLS_ERR_SSL_BAD_INPUT_DATA );
     }
 
+gettimeofday(&tv1, NULL);
     ret = ssl_prepare_handshake_step( ssl );
     if( ret != 0 )
         return( ret );
-
+gettimeofday(&tv2, NULL);
+printf ("Total time = %f seconds\n",
+         (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 +
+         (double) (tv2.tv_sec - tv1.tv_sec));
     ret = mbedtls_ssl_handle_pending_alert( ssl );
     if( ret != 0 )
         goto cleanup;
