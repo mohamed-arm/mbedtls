@@ -2991,13 +2991,13 @@ int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
     ret = ssl_prepare_handshake_step( ssl );
     if( ret != 0 )
         return( ret );
-    TIME_STOP("ssl_prepare_handshake_step");
-    TIME_START;
+   // TIME_STOP("ssl_prepare_handshake_step");
+    //TIME_START;
     ret = mbedtls_ssl_handle_pending_alert( ssl );
     if( ret != 0 )
         goto cleanup;
-    TIME_STOP("mbedtls_ssl_handle_pending_alert");
-    TIME_START;
+    //TIME_STOP("mbedtls_ssl_handle_pending_alert");
+ //   TIME_START;
 
 #if defined(MBEDTLS_SSL_CLI_C)
     if( ssl->conf->endpoint == MBEDTLS_SSL_IS_CLIENT )
@@ -3030,7 +3030,7 @@ int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
     }
 #endif
 #if defined(MBEDTLS_SSL_SRV_C)
-    TIME_STOP("mbedtls_ssl_handshake_client_step");
+//    TIME_STOP("mbedtls_ssl_handshake_client_step");
     TIME_START;
     if( ssl->conf->endpoint == MBEDTLS_SSL_IS_SERVER )
     {
