@@ -2008,7 +2008,7 @@ int mbedtls_ssl_flush_output( mbedtls_ssl_context *ssl )
 { 
    struct timeval tval_before;
    gettimeofday(&tval_before, NULL);
-   printf("[mbedtls_ssl_flush_output - start] Time elapsed: %ld.%03ld\n", (long int)tval_before.tv_sec, (long int)tval_before.tv_usec/1000);
+   //printf("[mbedtls_ssl_flush_output - start] Time elapsed: %ld.%03ld\n", (long int)tval_before.tv_sec, (long int)tval_before.tv_usec/1000);
 
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     unsigned char *buf;
