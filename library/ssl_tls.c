@@ -3061,6 +3061,7 @@ cleanup:
  */
 int mbedtls_ssl_handshake( mbedtls_ssl_context *ssl )
 {
+gettimeofday(&tv1, NULL);
     int ret = 0;
 
 
@@ -3081,7 +3082,6 @@ int mbedtls_ssl_handshake( mbedtls_ssl_context *ssl )
 
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "=> handshake" ) );
 
-gettimeofday(&tv1, NULL);
     /* Main handshake loop */
     while( mbedtls_ssl_is_handshake_over( ssl ) == 0 )
     {
