@@ -48,7 +48,7 @@
 
 #define TIME_START gettimeofday(&tv1, NULL);
 #define TIME_STOP(str) gettimeofday(&tv2, NULL); \
-         printf ("%s  = %f seconds\n",str, (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
+         printf ("%s  = %0.3f seconds\n",str, (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
 
 /* From RFC 8446:
  *   struct {
