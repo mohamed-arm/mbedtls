@@ -18,6 +18,7 @@
 */
 
 #include "common.h"
+#include <sys/time.h>
 
 #if defined(MBEDTLS_SSL_SRV_C) && defined(MBEDTLS_SSL_PROTO_TLS1_3)
 
