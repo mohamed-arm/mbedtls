@@ -3801,9 +3801,18 @@ static int ssl_consume_current_message( mbedtls_ssl_context *ssl );
 static int ssl_get_next_record( mbedtls_ssl_context *ssl );
 static int ssl_record_is_in_progress( mbedtls_ssl_context *ssl );
 
+
+#include <sys/time.h>
+#define TIME_START gettimeofday(&tv1, NULL);
+#define TIME_STOP(str) gettimeofday(&tv2, NULL); \
+        printf ("%s  = %0.3f seconds\n",str, (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
+
+
 int mbedtls_ssl_read_record( mbedtls_ssl_context *ssl,
                              unsigned update_hs_digest )
 {
+ struct timeval tv1,tv2;
+TIME_START
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
 
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "=> read record" ) );
@@ -3883,6 +3892,8 @@ int mbedtls_ssl_read_record( mbedtls_ssl_context *ssl,
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "<= read record" ) );
 
     return( 0 );
+
+TIME_STOP("mbedtls_ssl_read_record");
 }
 
 #if defined(MBEDTLS_SSL_PROTO_DTLS)
