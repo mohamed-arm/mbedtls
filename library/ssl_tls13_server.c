@@ -1799,14 +1799,14 @@ int mbedtls_ssl_tls13_handshake_server_step( mbedtls_ssl_context *ssl )
         case MBEDTLS_SSL_HELLO_REQUEST:
 	TIME_START;
             mbedtls_ssl_handshake_set_state( ssl, MBEDTLS_SSL_CLIENT_HELLO );
-	TIME_STOP("tls13 #1");
+	TIME_STOP("tls13 #1 MBEDTLS_SSL_HELLO_REQUEST");
             ret = 0;
             break;
 
         case MBEDTLS_SSL_CLIENT_HELLO:
 	TIME_START;
             ret = ssl_tls13_process_client_hello( ssl );
-	TIME_STOP("tls13 #2");
+	TIME_STOP("tls13 #2 MBEDTLS_SSL_CLIENT_HELLO");
             if( ret != 0 )
                 MBEDTLS_SSL_DEBUG_RET( 1, "ssl_tls13_process_client_hello", ret );
             break;
@@ -1814,7 +1814,7 @@ int mbedtls_ssl_tls13_handshake_server_step( mbedtls_ssl_context *ssl )
         case MBEDTLS_SSL_HELLO_RETRY_REQUEST:
 	TIME_START;
             ret = ssl_tls13_write_hello_retry_request( ssl );
-	TIME_STOP("tls13 #3");
+	TIME_STOP("tls13 #3 MBEDTLS_SSL_HELLO_RETRY_REQUEST");
             if( ret != 0 )
             {
                 MBEDTLS_SSL_DEBUG_RET( 1, "ssl_tls13_write_hello_retry_request", ret );
@@ -1825,13 +1825,13 @@ int mbedtls_ssl_tls13_handshake_server_step( mbedtls_ssl_context *ssl )
         case MBEDTLS_SSL_SERVER_HELLO:
 	TIME_START;
             ret = ssl_tls13_write_server_hello( ssl );
-	TIME_STOP("tls13 #4");
+	TIME_STOP("tls13 #4 MBEDTLS_SSL_SERVER_HELLO");
             break;
 
         case MBEDTLS_SSL_ENCRYPTED_EXTENSIONS:
 	TIME_START;
             ret = ssl_tls13_write_encrypted_extensions( ssl );
-	TIME_STOP("tls13 #5");
+	TIME_STOP("tls13 #5 MBEDTLS_SSL_ENCRYPTED_EXTENSIONS");
             if( ret != 0 )
             {
                 MBEDTLS_SSL_DEBUG_RET( 1, "ssl_tls13_write_encrypted_extensions", ret );
@@ -1843,44 +1843,44 @@ int mbedtls_ssl_tls13_handshake_server_step( mbedtls_ssl_context *ssl )
         case MBEDTLS_SSL_CERTIFICATE_REQUEST:
 	TIME_START;
             ret = ssl_tls13_write_certificate_request( ssl );
-	TIME_STOP("tls13 #6");
+	TIME_STOP("tls13 #6 MBEDTLS_SSL_CERTIFICATE_REQUEST");
             break;
 
         case MBEDTLS_SSL_SERVER_CERTIFICATE:
 	TIME_START;
             ret = ssl_tls13_write_server_certificate( ssl );
-	TIME_STOP("tls13 #7");
+	TIME_STOP("tls13 #7 MBEDTLS_SSL_SERVER_CERTIFICATE");
             break;
 
         case MBEDTLS_SSL_CERTIFICATE_VERIFY:
 	TIME_START;
             ret = ssl_tls13_write_certificate_verify( ssl );
-	TIME_STOP("tls13 #8");
+	TIME_STOP("tls13 #8 MBEDTLS_SSL_CERTIFICATE_VERIFY");
             break;
 #endif /* MBEDTLS_KEY_EXCHANGE_WITH_CERT_ENABLED */
 
         case MBEDTLS_SSL_SERVER_FINISHED:
 	TIME_START;
             ret = ssl_tls13_write_server_finished( ssl );
-	TIME_STOP("tls13 #9");
+	TIME_STOP("tls13 #9 MBEDTLS_SSL_SERVER_FINISHED");
             break;
 
         case MBEDTLS_SSL_CLIENT_FINISHED:
 	TIME_START;
             ret = ssl_tls13_process_client_finished( ssl );
-	TIME_STOP("tls13 #10");
+	TIME_STOP("tls13 #10 MBEDTLS_SSL_CLIENT_FINISHED");
             break;
 
         case MBEDTLS_SSL_HANDSHAKE_WRAPUP:
 	TIME_START;
             ret = ssl_tls13_handshake_wrapup( ssl );
-	TIME_STOP("tls13 #11");
+	TIME_STOP("tls13 #11 MBEDTLS_SSL_HANDSHAKE_WRAPUP");
             break;
 
         case MBEDTLS_SSL_CLIENT_CERTIFICATE:
 	TIME_START;
             ret = mbedtls_ssl_tls13_process_certificate( ssl );
-	TIME_STOP("tls13 #12");
+	TIME_STOP("tls13 #12 MBEDTLS_SSL_CLIENT_CERTIFICATE");
             if( ret == 0 )
             {
 #if defined(MBEDTLS_SSL_TLS_ATTESTATION)
@@ -1906,7 +1906,7 @@ int mbedtls_ssl_tls13_handshake_server_step( mbedtls_ssl_context *ssl )
         case MBEDTLS_SSL_CLIENT_CERTIFICATE_VERIFY:
 	TIME_START;
             ret = mbedtls_ssl_tls13_process_certificate_verify( ssl );
-	TIME_STOP("tls13 #13");
+	TIME_STOP("tls13 #13 MBEDTLS_SSL_CLIENT_CERTIFICATE_VERIFY");
             if( ret == 0 )
             {
                 mbedtls_ssl_handshake_set_state(
