@@ -1061,6 +1061,7 @@ int mbedtls_ssl_tls13_process_certificate( mbedtls_ssl_context *ssl )
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "=> parse certificate" ) );
 
+   struct timeval tv1,tv2;
 #if defined(MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED)
     unsigned char *buf;
     size_t buf_len;
