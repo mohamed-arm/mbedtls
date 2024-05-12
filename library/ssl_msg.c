@@ -3891,9 +3891,9 @@ TIME_START
 
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "<= read record" ) );
 
+TIME_STOP("mbedtls_ssl_read_record");
     return( 0 );
 
-TIME_STOP("mbedtls_ssl_read_record");
 }
 
 #if defined(MBEDTLS_SSL_PROTO_DTLS)
