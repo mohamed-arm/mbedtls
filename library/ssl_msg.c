@@ -3842,7 +3842,9 @@ TIME_STOP("mbedtls_ssl_read_record #1 ")
                 if( have_buffered == 0 )
 #endif /* MBEDTLS_SSL_PROTO_DTLS */
                 {
+TIME_START
                     ret = ssl_get_next_record( ssl );
+TIME_STOP("mbedtls_ssl_read_record ssl_get_next_record ")
                     if( ret == MBEDTLS_ERR_SSL_CONTINUE_PROCESSING )
                         continue;
 
