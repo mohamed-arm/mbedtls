@@ -6147,9 +6147,18 @@ psa_status_t psa_generate_key_internal(
     return( PSA_SUCCESS );
 }
 
+
+#include <sys/time.h>
+#define TIME_START gettimeofday(&tv1, NULL);
+#define TIME_STOP(str) gettimeofday(&tv2, NULL); \
+        printf ("%s  = %0.3f seconds\n",str, (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
+
+ struct timeval tv1,tv2;
+
 psa_status_t psa_generate_key( const psa_key_attributes_t *attributes,
                                mbedtls_svc_key_id_t *key )
 {
+   TIME_START;
     psa_status_t status;
     psa_key_slot_t *slot = NULL;
     psa_se_drv_table_entry_t *driver = NULL;
@@ -6214,6 +6223,7 @@ exit:
     if( status != PSA_SUCCESS )
         psa_fail_key_creation( slot, driver );
 
+   TIME_STOP("lib generat_key");
     return( status );
 }
 
