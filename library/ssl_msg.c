@@ -3853,7 +3853,7 @@ TIME_START
                     }
                 }
             }
-TIME_STOP("mbedtls_ssl_update_handshake_status #1 ")
+TIME_STOP("mbedtls_ssl_read_record #1 ")
 
 TIME_START
             ret = mbedtls_ssl_handle_message_type( ssl );
@@ -3872,7 +3872,7 @@ TIME_START
 
         } while( MBEDTLS_ERR_SSL_NON_FATAL           == ret  ||
                  MBEDTLS_ERR_SSL_CONTINUE_PROCESSING == ret );
-TIME_STOP("mbedtls_ssl_handle_message_type")
+TIME_STOP("mbedtls_ssl_read_record mbedtls_ssl_handle_message_type")
 TIME_START
 
         if( 0 != ret )
@@ -3894,7 +3894,7 @@ TIME_START
     }
 
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "<= read record" ) );
-TIME_STOP("mbedtls_ssl_update_handshake_status ")
+TIME_STOP("mbedtls_ssl_read_record mbedtls_ssl_update_handshake_status ")
 
     return( 0 );
 

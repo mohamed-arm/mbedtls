@@ -17,6 +17,13 @@
  *  limitations under the License.
  */
 
+#include <sys/time.h>
+#define TIME_START gettimeofday(&tv1, NULL);
+#define TIME_STOP(str) gettimeofday(&tv2, NULL); \
+         printf ("%s  = %0.3f seconds\n",str, (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
+
+
+
 #include "common.h"
 
 #if defined(MBEDTLS_SSL_TLS_C) && defined(MBEDTLS_SSL_PROTO_TLS1_3)
@@ -1049,13 +1056,6 @@ static int ssl_tls13_validate_certificate( mbedtls_ssl_context *ssl )
 }
 #endif /* MBEDTLS_SSL_KEEP_PEER_CERTIFICATE */
 #endif /* MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED */
-
-#include <sys/time.h>
-#define TIME_START gettimeofday(&tv1, NULL);
-#define TIME_STOP(str) gettimeofday(&tv2, NULL); \
-         printf ("%s  = %0.3f seconds\n",str, (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
-
-
 int mbedtls_ssl_tls13_process_certificate( mbedtls_ssl_context *ssl )
 {
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
@@ -1070,7 +1070,7 @@ int mbedtls_ssl_tls13_process_certificate( mbedtls_ssl_context *ssl )
     MBEDTLS_SSL_PROC_CHK( mbedtls_ssl_tls13_fetch_handshake_msg(
                           ssl, MBEDTLS_SSL_HS_CERTIFICATE,
                           &buf, &buf_len ) );
-     TIME_STOP("process_ceritifcate: #1");
+     TIME_STOP("process_ceritifcate: #1 mbedtls_ssl_tls13_fetch_handshake_msg");
 
 #if defined(MBEDTLS_SSL_TLS_ATTESTATION)
     if( ssl->conf->endpoint == MBEDTLS_SSL_IS_SERVER && 
