@@ -3812,13 +3812,13 @@ int mbedtls_ssl_read_record( mbedtls_ssl_context *ssl,
                              unsigned update_hs_digest )
 {
  struct timeval tv1,tv2;
-TIME_START
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
 
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "=> read record" ) );
 
     if( ssl->keep_current_message == 0 )
     {
+TIME_START
         do {
 
             ret = ssl_consume_current_message( ssl );
@@ -3853,9 +3853,8 @@ TIME_START
                     }
                 }
             }
-TIME_STOP("mbedtls_ssl_read_record #1 ")
 
-TIME_START
+//TIME_START
             ret = mbedtls_ssl_handle_message_type( ssl );
 
 #if defined(MBEDTLS_SSL_PROTO_DTLS)
@@ -3872,8 +3871,9 @@ TIME_START
 
         } while( MBEDTLS_ERR_SSL_NON_FATAL           == ret  ||
                  MBEDTLS_ERR_SSL_CONTINUE_PROCESSING == ret );
-TIME_STOP("mbedtls_ssl_read_record mbedtls_ssl_handle_message_type")
-TIME_START
+//TIME_STOP("mbedtls_ssl_read_record mbedtls_ssl_handle_message_type")
+
+//TIME_START
 
         if( 0 != ret )
         {
@@ -3886,6 +3886,7 @@ TIME_START
         {
             mbedtls_ssl_update_handshake_status( ssl );
         }
+TIME_STOP("mbedtls_ssl_read_record #1 ")
     }
     else
     {
