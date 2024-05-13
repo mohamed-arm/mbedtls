@@ -6179,6 +6179,8 @@ psa_status_t psa_generate_key( const psa_key_attributes_t *attributes,
                                      &slot, &driver );
     if( status != PSA_SUCCESS )
         goto exit;
+   TIME_STOP("lib generate_key psa_start_key_creation");
+   TIME_START
 
     /* In the case of a transparent key or an opaque key stored in local
      * storage ( thus not in the case of generating a key in a secure element
@@ -6210,9 +6212,12 @@ psa_status_t psa_generate_key( const psa_key_attributes_t *attributes,
         if( status != PSA_SUCCESS )
             goto exit;
     }
+   TIME_STOP("lib generate_key psa_allocate_buffer_to_slot");
 
+   TIME_START
     status = psa_driver_wrapper_generate_key( attributes,
         slot->key.data, slot->key.bytes, &slot->key.bytes );
+   TIME_STOP("lib generate_key psa_start_key_creation");
 
     if( status != PSA_SUCCESS )
         psa_remove_key_data_from_memory( slot );
@@ -6223,7 +6228,6 @@ exit:
     if( status != PSA_SUCCESS )
         psa_fail_key_creation( slot, driver );
 
-   TIME_STOP("lib generat_key");
     return( status );
 }
 
