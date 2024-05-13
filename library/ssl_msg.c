@@ -3819,15 +3819,11 @@ int mbedtls_ssl_read_record( mbedtls_ssl_context *ssl,
     if( ssl->keep_current_message == 0 )
     {
         do {
-TIME_START
 
-	gettimeofday(&tv3, NULL);
             ret = ssl_consume_current_message( ssl );
-gettimeofday(&tv4, NULL); 
-        printf ("%s  = %0.3f seconds\n","ssl_consume_current_message", (double) (tv4.tv_usec - tv3.tv_usec) / 1000000 + (double) (tv4.tv_sec - tv3.tv_sec));
             if( ret != 0 )
                 return( ret );
-
+TIME_START
             if( ssl_record_is_in_progress( ssl ) == 0 )
             {
 #if defined(MBEDTLS_SSL_PROTO_DTLS)
@@ -3841,6 +3837,7 @@ gettimeofday(&tv4, NULL);
                     if( ssl_load_buffered_message( ssl ) == 0 )
                         have_buffered = 1;
                 }
+TIME_STOP("mbedtls_ssl_read_record #1 ")
 
                 if( have_buffered == 0 )
 #endif /* MBEDTLS_SSL_PROTO_DTLS */
@@ -3857,7 +3854,8 @@ gettimeofday(&tv4, NULL);
                 }
             }
 
-//TIME_START
+TIME_STOP("mbedtls_ssl_read_record #2 ")
+TIME_START
             ret = mbedtls_ssl_handle_message_type( ssl );
 
 #if defined(MBEDTLS_SSL_PROTO_DTLS)
@@ -3871,7 +3869,7 @@ gettimeofday(&tv4, NULL);
                 ret = MBEDTLS_ERR_SSL_CONTINUE_PROCESSING;
             }
 #endif /* MBEDTLS_SSL_PROTO_DTLS */
-TIME_STOP("mbedtls_ssl_read_record #1 ")
+TIME_STOP("mbedtls_ssl_read_record #3 ")
 
         } while( MBEDTLS_ERR_SSL_NON_FATAL           == ret  ||
                  MBEDTLS_ERR_SSL_CONTINUE_PROCESSING == ret );
