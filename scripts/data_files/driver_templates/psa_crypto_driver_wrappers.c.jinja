@@ -511,17 +511,24 @@ psa_status_t psa_driver_wrapper_get_key_buffer_size(
     }
 }
 
+
+#include <sys/time.h>
+#define TIME_START gettimeofday(&tv1, NULL);
+#define TIME_STOP(str) gettimeofday(&tv2, NULL); \
+        printf ("%s  = %0.3f seconds\n",str, (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
+
 psa_status_t psa_driver_wrapper_generate_key(
     const psa_key_attributes_t *attributes,
     uint8_t *key_buffer, size_t key_buffer_size, size_t *key_buffer_length )
 {
-ss
+	struct timeval tv1,tv2;
     psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
     psa_key_location_t location =
         PSA_KEY_LIFETIME_GET_LOCATION(attributes->core.lifetime);
 
     /* Try dynamically-registered SE interface first */
 #if defined(MBEDTLS_PSA_CRYPTO_SE_C)
+TIME_START;
     const psa_drv_se_t *drv;
     psa_drv_se_context_t *drv_context;
 
@@ -534,6 +541,7 @@ ss
             /* Key is defined as being in SE, but we have no way to generate it */
             return( PSA_ERROR_NOT_SUPPORTED );
         }
+TIME_STOP("psa_get_se_driver");
         return( drv->key_management->p_generate(
             drv_context,
             *( (psa_key_slot_number_t *)key_buffer ),
@@ -541,6 +549,7 @@ ss
     }
 #endif /* MBEDTLS_PSA_CRYPTO_SE_C */
 
+TIME_START;
     switch( location )
     {
         case PSA_KEY_LOCATION_LOCAL_STORAGE:
@@ -563,14 +572,17 @@ ss
             /* Software fallback */
             status = psa_generate_key_internal(
                 attributes, key_buffer, key_buffer_size, key_buffer_length );
+TIME_STOP("PSA_KEY_LOCATION_LOCAL_STORAGE");
             break;
 
         /* Add cases for opaque driver here */
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
 #if defined(PSA_CRYPTO_DRIVER_TEST)
         case PSA_CRYPTO_TEST_DRIVER_LOCATION:
+TIME_START;
             status = mbedtls_test_opaque_generate_key(
                 attributes, key_buffer, key_buffer_size, key_buffer_length );
+TIME_STOP("PSA_CRYPTO_TEST_DRIVER_LOCATION");
             break;
 #endif /* PSA_CRYPTO_DRIVER_TEST */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
