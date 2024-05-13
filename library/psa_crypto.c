@@ -6217,7 +6217,7 @@ psa_status_t psa_generate_key( const psa_key_attributes_t *attributes,
    TIME_START
     status = psa_driver_wrapper_generate_key( attributes,
         slot->key.data, slot->key.bytes, &slot->key.bytes );
-   TIME_STOP("lib generate_key psa_start_key_creation");
+   TIME_STOP("lib generate_key psa_driver_wrapper_generate_key");
 
     if( status != PSA_SUCCESS )
         psa_remove_key_data_from_memory( slot );
