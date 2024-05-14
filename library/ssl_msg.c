@@ -1999,7 +1999,7 @@ TIME_START
     }
 
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "<= fetch input" ) );
-    TIME_STOP(mbedtls_ssl_fetch_input)
+    TIME_STOP("mbedtls_ssl_fetch_input")
 
     return( 0 );
 }

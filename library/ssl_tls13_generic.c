@@ -591,7 +591,7 @@ static int ssl_tls13_parse_eat( mbedtls_ssl_context *ssl,
 
     MBEDTLS_SSL_CHK_BUF_READ_PTR( p, end,
                                     certificate_request_context_len + 3 );
-
+TIME_START;
     /* check whether we got an empty certificate message */
     if( memcmp( p + certificate_request_context_len , "\0\0\0", 3 ) == 0 )
     {
@@ -615,10 +615,12 @@ static int ssl_tls13_parse_eat( mbedtls_ssl_context *ssl,
     p += 3;
 
     certificate_list_end = p + certificate_list_len;
+TIME_STOP("ssl_tls13_parse_eat #1")
     while( p < certificate_list_end )
     {
         size_t cert_data_len, extensions_len;
 
+TIME_START;
         MBEDTLS_SSL_CHK_BUF_READ_PTR( p, certificate_list_end, 3 );
         cert_data_len = MBEDTLS_GET_UINT24_BE( p, 0 );
         p += 3;
@@ -633,6 +635,8 @@ static int ssl_tls13_parse_eat( mbedtls_ssl_context *ssl,
                                           MBEDTLS_ERR_SSL_DECODE_ERROR );
             return( MBEDTLS_ERR_SSL_DECODE_ERROR );
         }
+TIME_STOP("ssl_tls13_parse_eat #2");
+TIME_START
 
         MBEDTLS_SSL_CHK_BUF_READ_PTR( p, certificate_list_end, cert_data_len );
 
@@ -670,6 +674,8 @@ static int ssl_tls13_parse_eat( mbedtls_ssl_context *ssl,
                                           MBEDTLS_ERR_SSL_DECODE_ERROR );
             return( MBEDTLS_ERR_SSL_DECODE_ERROR );
         }
+TIME_STOP("ssl_tls13_parse_eat #3");
+TIME_START
 
         ret = ssl_tls13_import_ik_pub( ssl, crt, crt_len, &ssl->session_negotiate->client_rpk );
         
@@ -687,6 +693,7 @@ static int ssl_tls13_parse_eat( mbedtls_ssl_context *ssl,
         p += 2;
         MBEDTLS_SSL_CHK_BUF_READ_PTR( p, certificate_list_end, extensions_len );
         p += extensions_len;
+TIME_STOP("ssl_tls13_parse_eat #4");
     }
 
     /* Check that all the message is consumed. */
@@ -1078,7 +1085,7 @@ int mbedtls_ssl_tls13_process_certificate( mbedtls_ssl_context *ssl )
     {
     TIME_START;
         MBEDTLS_SSL_PROC_CHK( ssl_tls13_parse_eat(  ssl, buf, buf + buf_len ) );
-     TIME_STOP("process_ceritifcate: #2");
+     TIME_STOP("process_ceritifcate: #ssl_tls13_parse_eat");
     } else
 #endif /* MBEDTLS_SSL_TLS_CERT_ATTESTATION_EAT */
     {
