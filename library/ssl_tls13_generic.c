@@ -575,6 +575,7 @@ static int ssl_tls13_parse_eat( mbedtls_ssl_context *ssl,
                                 unsigned char const *buf,
                                 unsigned char const *end )
 {
+   struct timeval tv1,tv2;
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     size_t certificate_request_context_len = 0;
     size_t certificate_list_len = 0;
