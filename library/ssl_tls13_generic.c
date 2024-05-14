@@ -658,6 +658,8 @@ TIME_START
                                             MBEDTLS_ERR_SSL_DECODE_ERROR );
             return( MBEDTLS_ERR_SSL_DECODE_ERROR );
         }
+TIME_STOP("ssl_tls13_parse_eat #2 f_attestation_nonce");
+TIME_START
 
         /* Callback into the verifier function provided by the application */
         ret = ssl->conf->a_vrfy( NULL,                   // session data
@@ -675,7 +677,7 @@ TIME_START
                                           MBEDTLS_ERR_SSL_DECODE_ERROR );
             return( MBEDTLS_ERR_SSL_DECODE_ERROR );
         }
-TIME_STOP("ssl_tls13_parse_eat #3");
+TIME_STOP("ssl_tls13_parse_eat #3 a_vrfy");
 TIME_START
 
         ret = ssl_tls13_import_ik_pub( ssl, crt, crt_len, &ssl->session_negotiate->client_rpk );
