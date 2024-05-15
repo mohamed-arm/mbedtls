@@ -3821,6 +3821,7 @@ int mbedtls_ssl_read_record( mbedtls_ssl_context *ssl,
 
     if( ssl->keep_current_message == 0 )
     {
+gettimeofday(&tv3, NULL);
         do {
 
             ret = ssl_consume_current_message( ssl );
@@ -3859,28 +3860,32 @@ TIME_STOP("mbedtls_ssl_read_record ssl_get_next_record ")
                 }
             }
 
-TIME_STOP("mbedtls_ssl_read_record #2 ")
 TIME_START
             ret = mbedtls_ssl_handle_message_type( ssl );
+TIME_STOP("mbedtls_ssl_read_record mbedtls_ssl_handle_message_type ")
 
 #if defined(MBEDTLS_SSL_PROTO_DTLS)
             if( ret == MBEDTLS_ERR_SSL_EARLY_MESSAGE )
             {
                 /* Buffer future message */
+TIME_START
                 ret = ssl_buffer_message( ssl );
+TIME_STOP("mbedtls_ssl_read_record #3 ssl_buffer_message ")
                 if( ret != 0 )
                     return( ret );
 
                 ret = MBEDTLS_ERR_SSL_CONTINUE_PROCESSING;
             }
 #endif /* MBEDTLS_SSL_PROTO_DTLS */
-TIME_STOP("mbedtls_ssl_read_record #3 ")
 
         } while( MBEDTLS_ERR_SSL_NON_FATAL           == ret  ||
                  MBEDTLS_ERR_SSL_CONTINUE_PROCESSING == ret );
+	gettimeofday(&tv4, NULL); 
+        printf ("%s  = %0.3f seconds\n","mbedtls_ssl_read_record While loop", (double) (tv4.tv_usec - tv3.tv_usec) / 1000000 + (double) (tv4.tv_sec - tv3.tv_sec));
+
+
 //TIME_STOP("mbedtls_ssl_read_record mbedtls_ssl_handle_message_type")
 
-//TIME_START
 
         if( 0 != ret )
         {
@@ -3891,7 +3896,9 @@ TIME_STOP("mbedtls_ssl_read_record #3 ")
         if( ssl->in_msgtype == MBEDTLS_SSL_MSG_HANDSHAKE &&
             update_hs_digest == 1 )
         {
+    TIME_START
             mbedtls_ssl_update_handshake_status( ssl );
+    TIME_STOP("mbedtls_ssl_read_record mbedtls_ssl_update_handshake_status ")
         }
     }
     else
@@ -3901,7 +3908,6 @@ TIME_STOP("mbedtls_ssl_read_record #3 ")
     }
 
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "<= read record" ) );
-TIME_STOP("mbedtls_ssl_read_record mbedtls_ssl_update_handshake_status ")
 
     return( 0 );
 
