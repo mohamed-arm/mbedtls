@@ -3021,7 +3021,7 @@ TIME_STOP("mbedtls_ssl_write_client_hello");
 {
 TIME_START;
                     ret = mbedtls_ssl_tls13_handshake_client_step( ssl );
-TIME_STOP("mbedtls_ssl_tls13_handshake_client_step");
+TIME_STOP("mbedtls_ssl_tls13_handshake_client_step #1");
 }
                 else
 {
@@ -3036,7 +3036,7 @@ TIME_STOP("mbedtls_ssl_handshake_client_step");
 #else
 TIME_START;
                 ret = mbedtls_ssl_tls13_handshake_client_step( ssl );
-TIME_STOP("mbedtls_ssl_tls13_handshake_client_step");
+TIME_STOP("mbedtls_ssl_tls13_handshake_client_step #1");
 #endif
         }
     }
