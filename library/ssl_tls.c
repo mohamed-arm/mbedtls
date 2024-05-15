@@ -2978,7 +2978,6 @@ int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
     gettimeofday(&tv1, NULL);
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
 
-    //printf("----> mbedtls_ssl_handshake_step \n");
     if( ssl            == NULL                       ||
         ssl->conf      == NULL                       ||
         ssl->handshake == NULL                       ||
@@ -2987,17 +2986,16 @@ int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
         return( MBEDTLS_ERR_SSL_BAD_INPUT_DATA );
     }
 
-//gettimeofday(&tv1, NULL);
+TIME_START
     ret = ssl_prepare_handshake_step( ssl );
     if( ret != 0 )
         return( ret );
-   // TIME_STOP("ssl_prepare_handshake_step");
-    //TIME_START;
+TIME_STOP("mbedtls_ssl_handshake_step ssl_prepare_handshake_step");
+TIME_START;
     ret = mbedtls_ssl_handle_pending_alert( ssl );
     if( ret != 0 )
         goto cleanup;
-    //TIME_STOP("mbedtls_ssl_handle_pending_alert");
- //   TIME_START;
+TIME_STOP("mbedtls_ssl_handshake_step mbedtls_ssl_handle_pending_alert");
 
 #if defined(MBEDTLS_SSL_CLI_C)
     if( ssl->conf->endpoint == MBEDTLS_SSL_IS_CLIENT )
@@ -3012,40 +3010,52 @@ int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
                 break;
 
             case MBEDTLS_SSL_CLIENT_HELLO:
+TIME_START;
                 ret = mbedtls_ssl_write_client_hello( ssl );
+TIME_STOP("mbedtls_ssl_write_client_hello");
                 break;
 
             default:
 #if defined(MBEDTLS_SSL_PROTO_TLS1_2) && defined(MBEDTLS_SSL_PROTO_TLS1_3)
                 if( ssl->tls_version == MBEDTLS_SSL_VERSION_TLS1_3 )
+TIME_START;
                     ret = mbedtls_ssl_tls13_handshake_client_step( ssl );
+TIME_STOP("mbedtls_ssl_tls13_handshake_client_step");
                 else
+TIME_START;
                     ret = mbedtls_ssl_handshake_client_step( ssl );
+TIME_STOP("mbedtls_ssl_handshake_client_step");
 #elif defined(MBEDTLS_SSL_PROTO_TLS1_2)
+TIME_START;
                 ret = mbedtls_ssl_handshake_client_step( ssl );
+TIME_STOP("mbedtls_ssl_handshake_client_step");
 #else
+TIME_START;
                 ret = mbedtls_ssl_tls13_handshake_client_step( ssl );
+TIME_STOP("mbedtls_ssl_tls13_handshake_client_step");
 #endif
         }
     }
 #endif
 #if defined(MBEDTLS_SSL_SRV_C)
 //    TIME_STOP("mbedtls_ssl_handshake_client_step");
-    TIME_START;
     if( ssl->conf->endpoint == MBEDTLS_SSL_IS_SERVER )
     {
 #if defined(MBEDTLS_SSL_PROTO_TLS1_3)
         if( mbedtls_ssl_conf_is_tls13_only( ssl->conf ) )
+TIME_START;
             ret = mbedtls_ssl_tls13_handshake_server_step( ssl );
+TIME_STOP("mbedtls_ssl_tls13_handshake_server_step");
 #endif /* MBEDTLS_SSL_PROTO_TLS1_3 */
 
 #if defined(MBEDTLS_SSL_PROTO_TLS1_2)
         if( mbedtls_ssl_conf_is_tls12_only( ssl->conf ) )
+TIME_START;
             ret = mbedtls_ssl_handshake_server_step( ssl );
+TIME_STOP("mbedtls_ssl_handshake_server_step");
 #endif /* MBEDTLS_SSL_PROTO_TLS1_2 */
     }
 #endif
-    TIME_STOP("mbedtls_ssl_handshake_server_step");
     TIME_START;
 
     if( ret != 0 )
@@ -3059,6 +3069,8 @@ int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl )
             goto cleanup;
         }
     }
+    TIME_STOP("mbedtls_ssl_handshake_server_step");
+
 
 cleanup:
     return( ret );
