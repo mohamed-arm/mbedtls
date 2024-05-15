@@ -18,6 +18,11 @@
  *
  *  This file is part of mbed TLS ( https://tls.mbed.org )
  */
+#include <sys/time.h>
+#define TIME_START gettimeofday(&tv1, NULL);
+#define TIME_STOP(str) gettimeofday(&tv2, NULL); \
+        printf ("%s  = %0.3f seconds\n",str, (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
+
 
 #include "common.h"
 
@@ -2061,7 +2066,9 @@ static int ssl_tls13_handshake_wrapup( mbedtls_ssl_context *ssl )
 }
 
 int mbedtls_ssl_tls13_handshake_client_step( mbedtls_ssl_context *ssl )
+
 {
+ struct timeval tv1,tv2;
     int ret = 0;
 
     switch( ssl->state )
@@ -2072,55 +2079,81 @@ int mbedtls_ssl_tls13_handshake_client_step( mbedtls_ssl_context *ssl )
          */
         case MBEDTLS_SSL_HELLO_REQUEST:
         case MBEDTLS_SSL_CLIENT_HELLO:
+TIME_START
             ret = mbedtls_ssl_write_client_hello( ssl );
+TIME_STOP("mbedtls_ssl_write_client_hello");
             break;
 
         case MBEDTLS_SSL_SERVER_HELLO:
+TIME_START
             ret = ssl_tls13_process_server_hello( ssl );
+TIME_STOP("ssl_tls13_process_server_hello");
             break;
 
         case MBEDTLS_SSL_ENCRYPTED_EXTENSIONS:
+TIME_START
             ret = ssl_tls13_process_encrypted_extensions( ssl );
+TIME_STOP("ssl_tls13_process_encrypted_extensions")
             break;
 
 #if defined(MBEDTLS_KEY_EXCHANGE_WITH_CERT_ENABLED)
         case MBEDTLS_SSL_CERTIFICATE_REQUEST:
+
+TIME_START
             ret = ssl_tls13_process_certificate_request( ssl );
+TIME_STOP("ssl_tls13_process_certificate_request")
             break;
 
         case MBEDTLS_SSL_SERVER_CERTIFICATE:
+
+TIME_START
             ret = ssl_tls13_process_server_certificate( ssl );
+TIME_STOP("ssl_tls13_process_server_certificate")
             break;
 
         case MBEDTLS_SSL_CERTIFICATE_VERIFY:
+TIME_START
             ret = ssl_tls13_process_certificate_verify( ssl );
+TIME_STOP("ssl_tls13_process_certificate_verify")
             break;
 #endif /* MBEDTLS_KEY_EXCHANGE_WITH_CERT_ENABLED */
 
         case MBEDTLS_SSL_SERVER_FINISHED:
+TIME_START
             ret = ssl_tls13_process_server_finished( ssl );
+TIME_STOP("ssl_tls13_process_server_finished")
             break;
 
         case MBEDTLS_SSL_CLIENT_CERTIFICATE:
+TIME_START
             ret = ssl_tls13_write_client_certificate( ssl );
+TIME_STOP("ssl_tls13_write_client_certificate")
             break;
 
 #if defined(MBEDTLS_KEY_EXCHANGE_WITH_CERT_ENABLED)
         case MBEDTLS_SSL_CLIENT_CERTIFICATE_VERIFY:
+TIME_START
             ret = ssl_tls13_write_client_certificate_verify( ssl );
+TIME_STOP("ssl_tls13_write_client_certificate_verify")
             break;
 #endif /* MBEDTLS_KEY_EXCHANGE_WITH_CERT_ENABLED */
 
         case MBEDTLS_SSL_CLIENT_FINISHED:
+TIME_START
             ret = ssl_tls13_write_client_finished( ssl );
+TIME_STOP("ssl_tls13_write_client_finished")
             break;
 
         case MBEDTLS_SSL_FLUSH_BUFFERS:
+TIME_START
             ret = ssl_tls13_flush_buffers( ssl );
+TIME_STOP("ssl_tls13_flush_buffers")
             break;
 
         case MBEDTLS_SSL_HANDSHAKE_WRAPUP:
+TIME_START
             ret = ssl_tls13_handshake_wrapup( ssl );
+TIME_STOP("ssl_tls13_handshake_wrapup")
             break;
 
         /*
@@ -2128,15 +2161,21 @@ int mbedtls_ssl_tls13_handshake_client_step( mbedtls_ssl_context *ssl )
          */
 #if defined(MBEDTLS_SSL_TLS1_3_COMPATIBILITY_MODE)
         case MBEDTLS_SSL_CLIENT_CCS_BEFORE_2ND_CLIENT_HELLO:
+TIME_START
             ret = mbedtls_ssl_tls13_write_change_cipher_spec( ssl );
             if( ret == 0 )
                 mbedtls_ssl_handshake_set_state( ssl, MBEDTLS_SSL_CLIENT_HELLO );
+TIME_STOP("mbedtls_ssl_handshake_set_state")
+
             break;
 
         case MBEDTLS_SSL_CLIENT_CCS_AFTER_SERVER_FINISHED:
+TIME_START
             ret = mbedtls_ssl_tls13_write_change_cipher_spec( ssl );
             if( ret == 0 )
                 mbedtls_ssl_handshake_set_state( ssl, MBEDTLS_SSL_CLIENT_CERTIFICATE );
+TIME_STOP("mbedtls_ssl_handshake_set_state")
+            break;
             break;
 #endif /* MBEDTLS_SSL_TLS1_3_COMPATIBILITY_MODE */
 
