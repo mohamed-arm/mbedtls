@@ -1766,7 +1766,6 @@ int mbedtls_ssl_decrypt_buf( mbedtls_ssl_context const *ssl,
 #define TIME_STOP(str) gettimeofday(&tv2, NULL); \
         printf ("%s  = %0.3f seconds\n",str, (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
 
- struct timeval tv1,tv2;
 
 /*
  * Fill the input message buffer by appending data to it.
@@ -1786,6 +1785,7 @@ int mbedtls_ssl_decrypt_buf( mbedtls_ssl_context const *ssl,
 int mbedtls_ssl_fetch_input( mbedtls_ssl_context *ssl, size_t nb_want )
 {
 
+ struct timeval tv1,tv2;
 TIME_START 
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     size_t len;
