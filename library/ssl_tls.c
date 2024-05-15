@@ -3021,14 +3021,14 @@ TIME_STOP("mbedtls_ssl_write_client_hello");
 {
 TIME_START;
                     ret = mbedtls_ssl_tls13_handshake_client_step( ssl );
-}
 TIME_STOP("mbedtls_ssl_tls13_handshake_client_step");
+}
                 else
 {
 TIME_START;
                     ret = mbedtls_ssl_handshake_client_step( ssl );
-}
 TIME_STOP("mbedtls_ssl_handshake_client_step");
+}
 #elif defined(MBEDTLS_SSL_PROTO_TLS1_2)
 TIME_START;
                 ret = mbedtls_ssl_handshake_client_step( ssl );
